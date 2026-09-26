@@ -237,6 +237,23 @@ public class ProductServiceTests
     }
 
     [Fact]
+    public async Task GetProductsAsync_ShouldApplySearchParameters()
+    {
+        var parameters = new ProductQueryParameters { Search = "laptop", PageNumber = 1, PageSize = 10 };
+        var products = new List<Product> { CreateProduct() };
+
+        _repositoryMock.Setup(r => r.GetAllAsync(parameters)).ReturnsAsync(products);
+        _repositoryMock.Setup(r => r.CountAsync(parameters)).ReturnsAsync(1);
+
+        var response = await _service.GetProductsAsync(parameters);
+
+        Assert.Single(response.Items);
+        Assert.Equal(1, response.TotalCount);
+        _repositoryMock.Verify(r => r.GetAllAsync(parameters), Times.Once);
+        _repositoryMock.Verify(r => r.CountAsync(parameters), Times.Once);
+    }
+
+    [Fact]
     public async Task CreateProductAsync_ShouldTrimValues_WhenCreatingProduct()
     {
         var request = CreateCreateProductRequest();
