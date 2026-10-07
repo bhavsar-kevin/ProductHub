@@ -30,7 +30,7 @@ public class ProductServiceTests
         var result = await _service.GetProductByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.Equal(product.Id, 88);
+        Assert.Equal(product.Id, result!.Id);
         Assert.Equal(product.SKU, result.SKU);
     }
 
