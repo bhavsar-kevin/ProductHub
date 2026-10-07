@@ -30,6 +30,7 @@ jobs:
             /k:"bhavsar-kevin_ProductHub" \
             /o:"bhavsar-kevin" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
       - name: Restore dependencies
         run: dotnet restore
@@ -38,17 +39,21 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run tests with coverage
-        run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage"
+        run: |
+          dotnet test --no-build --configuration Release \
+            --collect:"XPlat Code Coverage" \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Install ReportGenerator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
         
       - name: Generate coverage report
-        run: reportgenerator 
-          -reports:**/coverage.cobertura.xml 
-          -targetdir:coverage-report 
-          -reporttypes:Html
-          
+        run: |
+          reportgenerator \
+            -reports:"**/coverage.opencover.xml" \
+            -targetdir:"coveragereport" \
+            -reporttypes:Html
+                
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
