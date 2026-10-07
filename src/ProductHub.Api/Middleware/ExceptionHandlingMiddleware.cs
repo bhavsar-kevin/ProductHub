@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json;
 
 namespace ProductHub.Api.Middleware;
 
@@ -24,16 +23,19 @@ public class ExceptionHandlingMiddleware
         {
             _logger.LogError(ex, "Unhandled exception occurred while processing {Path}", context.Request.Path);
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            if (context.Response.HasStarted)
+            {
+                throw;
+            }
 
-            var response = new
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(new
             {
                 error = "An unexpected error occurred. Please try again later."
-            };
-
-            var json = JsonSerializer.Serialize(response);
-            await context.Response.WriteAsync(json);
+            });
         }
     }
 }

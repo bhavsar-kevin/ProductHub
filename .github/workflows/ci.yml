@@ -21,11 +21,53 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: SonarQube Begin
+        run: |
+          dotnet sonarscanner begin \
+            /k:"bhavsar-kevin_ProductHub" \
+            /o:"bhavsar-kevin" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.exclusions="coveragereport/**"
+
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Run tests
-        run: dotnet test --no-build --configuration Release
+      - name: Run tests with coverage
+        run: |
+          dotnet test --no-build --configuration Release \
+            --collect:"XPlat Code Coverage" \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+        
+      - name: Generate coverage report
+        run: |
+          reportgenerator \
+            -reports:"**/coverage.opencover.xml" \
+            -targetdir:"coveragereport" \
+            -reporttypes:Html
+                
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: "**/coverage.opencover.xml"
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-report
+          path: coveragereport
+
+      - name: SonarQube End
+        run: |
+          dotnet sonarscanner end \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

@@ -41,14 +41,18 @@ Phase 1 — ASP.NET Core Application ✅ COMPLETED
 
 Phase 2 — Git & GitHub ✅ COMPLETED
 
-Phase 3 — GitHub Actions CI 🚧 NEXT
+Phase 3 — GitHub Actions CI ✅ COMPLETED
+
+Phase 4 — Pull Request CI ✅ COMPLETED
+
+Pull Requests are now protected by automated CI checks before merging into `main`.
 
 ```text
 Phase 1  ████████████████████ 100%
 Phase 2  ████████████████████ 100%
-Phase 3  ░░░░░░░░░░░░░░░░░░░░ 0%
-Phase 4  ░░░░░░░░░░░░░░░░░░░░ 0%
-Phase 5+ Planned
+Phase 3  ████████████████████ 100%
+Phase 4  ████████████████████ 100%
+Phase 5  ░░░░░░░░░░░░░░░░░░░░ 0%
 ```
 
 Phase 2 is complete. The project is now hosted in GitHub with a basic feature-branch and Pull Request workflow. The next step is to introduce GitHub Actions and automatically build and test the application.
@@ -56,12 +60,12 @@ Phase 2 is complete. The project is now hosted in GitHub with a basic feature-br
 ## 🗺️ CI/CD Learning Roadmap
 
 | Phase | Topic | Status |
-|------|------|------|
+|---|---|---|
 | 1 | ASP.NET Core Application | ✅ Completed |
 | 2 | Git & GitHub | ✅ Completed |
-| 3 | First GitHub Actions CI Pipeline | 🚧 Next |
-| 4 | Pull Request CI | ⏳ Planned |
-| 5 | Test Coverage & Code Quality | ⏳ Planned |
+| 3 | First GitHub Actions CI Pipeline | ✅ Completed |
+| 4 | Pull Request CI | ✅ Completed |
+| 5 | Test Coverage & Code Quality | 🚧 Next |
 | 6 | Secrets & Configuration | ⏳ Planned |
 | 7 | Docker | ⏳ Planned |
 | 8 | Container Registry | ⏳ Planned |
@@ -171,27 +175,36 @@ This workflow establishes the foundation for GitHub Actions and automated delive
 - Merge conflicts
 - Collaborative development workflow
 
+### Phase 3 & 4 — Pull Request CI
+
+- Configured CI to run automatically on Pull Requests.
+- Added branch protection for `main`.
+- Required Pull Request approval before merging.
+- Required CI status checks to pass before merging.
+- Learned how failed CI checks block a merge.
+- Verified the complete cycle: CI failure → fix → CI pass → merge.
+
 # 🔄 Current Development Workflow
 
 Developer
-↓
+    ↓
 Feature Branch
-↓
-Code Changes
-↓
-Unit Tests
-↓
-git commit
-↓
-git push
-↓
+    ↓
+Code + Tests
+    ↓
+Push
+    ↓
 Pull Request
-↓
-Review
-↓
-Merge
-↓
-main
+    ↓
+GitHub Actions CI
+    ↓
+Build + Test
+    ↓
+CI Pass ✅
+    ↓
+Code Review
+    ↓
+Merge → main
 
 Currently, the build and tests are still triggered manually by the developer.
 
@@ -199,55 +212,62 @@ This is intentional because the next phase will automate this process using GitH
 
 # 🚦 Current CI/CD State
 
-Source Control       ✅ Git + GitHub
-Application Build    ✅ Local
-Unit Tests            ✅ Local
-Pull Requests         ✅
-Automated CI          ⏳ Next
-Docker                ⏳
-Container Registry    ⏳
-CD                    ⏳
-Cloud Deployment     ⏳
-Production Pipeline  ⏳
+Source Control ✅ Git + GitHub  
+Application Build ✅  
+Local Unit Tests ✅  
+Pull Requests ✅  
+Automated CI ✅  
+Pull Request CI ✅  
+Branch Protection ✅  
+Test Coverage ⏳  
+Code Quality ⏳  
+Security Scanning ⏳  
+Docker ⏳  
+Container Registry ⏳  
+Continuous Deployment ⏳  
+Cloud Deployment ⏳  
+Production Pipeline ⏳  
 
-At this point, ProductHub can be built and tested locally, and its source code is managed through GitHub. However, the build and test process is still manual. Phase 3 will automate these checks.
+ProductHub now has an automated GitHub Actions CI pipeline that restores dependencies, builds the application, and runs unit tests.
 
-# 🚀 Next Phase — GitHub Actions CI
+Pull Requests targeting `main` are protected by required CI checks and code review. Failed CI checks block the merge until the issue is fixed.
 
-Phase 3 will introduce the first GitHub Actions workflow.
+# 🚀 Next Phase — Test Coverage & Code Quality
 
-The initial pipeline will deliberately be simple:
+Phase 5 will introduce automated test coverage and code quality checks into the CI pipeline.
+
+The pipeline will progressively evolve to:
 
 git push / Pull Request
-↓
+        ↓
 GitHub Actions
-↓
+        ↓
 Checkout source
-↓
+        ↓
 Setup .NET
-↓
+        ↓
 Restore dependencies
-↓
+        ↓
 Build application
-↓
+        ↓
 Run unit tests
-↓
+        ↓
+Test Coverage
+        ↓
+Code Quality
+        ↓
 Pass / Fail
 
-The goal of Phase 3 is to understand:
+## 🧠 Phase 4 — What I Learned
 
-- Workflow
-- Trigger
-- Job
-- Runner
-- Step
-- Action
-- `run`
-- GitHub expressions
-- Build failures
-- Test failures
-
-This documentation is intentionally limited to the learning milestone; no workflow files are added yet.
+- Pull Request CI
+- Required status checks
+- Branch protection
+- Required code review
+- CI as a merge gate
+- Build failure blocks merging
+- Test failure blocks merging
+- Fixing CI failures and re-running the pipeline
 
 ## Project Structure
 
