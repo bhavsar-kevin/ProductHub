@@ -36,21 +36,6 @@ public class ProductService : IProductService
         };
     }
 
-    public string GetProductName(ProductDto product)
-    {
-        string name = product.Name;
-
-        if (name != null)
-        {
-            if (name != "")
-            {
-                return name;
-            }
-        }
-
-        return "";
-    }
-
     public async Task<ProductDto?> GetProductByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var product = await _productRepository.GetByIdAsync(id);
