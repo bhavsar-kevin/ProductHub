@@ -62,7 +62,7 @@ public class ProductService : IProductService
 
         _logger.LogInformation("Product created with ID {ProductId} and SKU {Sku}", created.Id, created.SKU);
 
-        return created.ToDto();
+        return created.ToDto(;
     }
 
     public async Task<bool> UpdateProductAsync(int id, UpdateProductRequest request, CancellationToken cancellationToken = default)
